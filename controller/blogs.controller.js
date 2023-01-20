@@ -4,7 +4,7 @@ exports.createBlog = async (req, res) => {
   try {
     const blog = await Blog.create(req.body);
 
-    res.status(200).json({
+    res.status(201).json({
       status: "success",
       data: {
         blog,
@@ -15,12 +15,14 @@ exports.createBlog = async (req, res) => {
   }
 };
 
-exports.getBlogs = (req, res) => {
+exports.getBlogs = async (req, res) => {
   try {
+    const blogs = await Blog.find();
+
     res.status(200).json({
       status: "success",
       data: {
-        message: "Blogs",
+        blogs
       },
     });
   } catch (error) {
@@ -28,7 +30,21 @@ exports.getBlogs = (req, res) => {
   }
 };
 
-exports.getBlog = (req, res) => {};
+exports.getBlog = async (req, res) => {
+  try {
+    console.log(req.params);
+    const blog = await Blog.findById(req.params.id);
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        blog
+      },
+    });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
 exports.updateBlog = (req, res) => {};
 
