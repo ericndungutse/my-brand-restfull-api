@@ -32,7 +32,6 @@ exports.getBlogs = async (req, res) => {
 
 exports.getBlog = async (req, res) => {
   try {
-    console.log(req.params);
     const blog = await Blog.findById(req.params.id);
 
     res.status(200).json({
@@ -46,6 +45,34 @@ exports.getBlog = async (req, res) => {
   }
 };
 
-exports.updateBlog = (req, res) => {};
+exports.updateBlog = async (req, res) => {
+  try {
+    
+    const blog = await Blog.findByIdAndUpdate(req.params.id, req.body,{
+      new: true
+    });
 
-exports.deleteBlog = (req, res) => {};
+
+    res.status(202).json({
+      status: "success",
+      data: {
+        blog
+      },
+    });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+exports.deleteBlog = async(req, res) => {
+  try {
+    await Blog.findByIdAndDelete(req.params.id);
+
+    res.status(204).json({
+      status: "success",
+      data: null
+    });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
