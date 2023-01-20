@@ -1,9 +1,13 @@
-exports.createBlog = (req, res) => {
+const Blog = require("../model/blog.model.js");
+
+exports.createBlog = async (req, res) => {
   try {
+    const blog = await Blog.create(req.body);
+
     res.status(200).json({
       status: "success",
       data: {
-        message: "Blog Created",
+        blog,
       },
     });
   } catch (error) {

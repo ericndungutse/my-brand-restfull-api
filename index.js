@@ -5,11 +5,9 @@ const app = require("./app");
 
 mongoose.set("strictQuery", false);
 
-mongoose.connect(process.env.DATABASE_LOCAL, {}, () => {
-  console.log("********************************");
+mongoose.connect(process.env.mongoDb).then(con => {console.log("********************************");
   console.log("Database Connected Successfully!");
-  console.log("********************************");
-});
+  console.log("********************************");});
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Server is running at ${port}...`));
