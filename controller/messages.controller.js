@@ -1,6 +1,6 @@
 const Message = require("../model/message.model");
 
-exports.createMessage = async (req, res) => {
+exports.createMessage = async (req, res, next) => {
   try {
     const message = await Message.create({
       name: req.body.name,
@@ -15,14 +15,11 @@ exports.createMessage = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(400).json({
-      status: "fail",
-      message: error.message,
-    });
+    next(error);
   }
 };
 
-exports.getMessages = async (req, res) => {
+exports.getMessages = async (req, res, next) => {
   try {
     const messages = await Message.find();
 
@@ -33,14 +30,11 @@ exports.getMessages = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(400).json({
-      status: "fail",
-      message: error.message,
-    });
+    next(error);
   }
 };
 
-exports.getMessage = async (req, res) => {
+exports.getMessage = async (req, res, next) => {
   try {
     const message = await Message.findById(req.params.id);
 
@@ -51,9 +45,6 @@ exports.getMessage = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(400).json({
-      status: "fail",
-      message: error.message,
-    });
+    next(error);
   }
 };

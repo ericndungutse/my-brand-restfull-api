@@ -1,1 +1,0 @@
-const { findById } = require("../model/user.model");

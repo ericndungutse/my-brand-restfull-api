@@ -10,7 +10,6 @@ const messageSchema = new mongoose.Schema(
     email: {
       type: String,
       required: [true, "A valid working email is required"],
-      unique: true,
     },
 
     message: {

@@ -1,6 +1,7 @@
 const Blog = require("../model/blog.model.js");
+const AppError = require("../utils/AppError");
 
-exports.createBlog = async (req, res) => {
+exports.createBlog = async (req, res, next) => {
   try {
     const blog = await Blog.create(req.body);
 
@@ -11,7 +12,7 @@ exports.createBlog = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error.message);
+    next(error);
   }
 };
 
@@ -30,9 +31,11 @@ exports.getBlogs = async (req, res, next) => {
   }
 };
 
-exports.getBlog = async (req, res) => {
+exports.getBlog = async (req, res, next) => {
   try {
     const blog = await Blog.findById(req.params.id);
+
+    if (!blog) return next(new AppError("Blog not found", 404));
 
     res.status(200).json({
       status: "success",
@@ -41,15 +44,17 @@ exports.getBlog = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error.message);
+    next(error);
   }
 };
 
-exports.updateBlog = async (req, res) => {
+exports.updateBlog = async (req, res, next) => {
   try {
     const blog = await Blog.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
+
+    if (!blog) return next(new AppError("Blog not found", 404));
 
     res.status(202).json({
       status: "success",
@@ -58,19 +63,21 @@ exports.updateBlog = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error.message);
+    next(error);
   }
 };
 
-exports.deleteBlog = async (req, res) => {
+exports.deleteBlog = async (req, res, next) => {
   try {
-    await Blog.findByIdAndDelete(req.params.id);
+    const blog = await Blog.findByIdAndDelete(req.params.id);
+
+    if (!blog) return next(new AppError("Blog not found", 404));
 
     res.status(204).json({
       status: "success",
       data: null,
     });
   } catch (error) {
-    console.log(error.message);
+    next(error);
   }
 };

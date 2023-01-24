@@ -1,40 +1,34 @@
 const AppError = require("./../utils/AppError");
 
-const sendErrorDev = (err, req, res) => {
-  // API
-  if (req.originalUrl.startsWith("/api")) {
-    res.status(err.statusCode).json({
-      status: err.status,
-      error: err,
-      message: err.message,
-      stack: err.stack,
-    });
-    // UI
-  } else {
-    res.status(err.statusCode).render("error", {
-      title: "Something went wrong!",
-      msg: err.message,
-    });
-  }
+const handleJWTError = () =>
+  new AppError("Invalid login session. Please log in again!", 401);
+
+const handleJWTExpiredError = () =>
+  new AppError("Your login session has expired! Please log in again.", 401);
+
+const handleDuplicateError = (err) => {
+  message = `"${String(
+    Object.keys(err.keyValue)
+  ).toUpperCase()}" ${Object.values(
+    err.keyValue
+  )} is taken. Try a different ${Object.keys(err.keyValue)}`;
+
+  return new AppError(message, 400);
 };
 
-const sendErrorProd = (err, req, res) => {
-  // EXPECTED ERROR
-  if (err.isOperational) {
-    res.status(err.statusCode).json({
-      status: err.status,
-      message: err.message,
-    });
-    // UNEXPECTED ERROR
-  } else {
-    // 1) LOG ERROR
-    console.error("ERROR: ", err);
-    // 2) SEND GENERIC MESSAGE
-    res.status(500).json({
-      status: "error",
-      message: "Something went wrong!",
-    });
-  }
+const handleValidationError = (err) => {
+  message = Object.values(err.errors).map(
+    ({ properties: { path, message } }) => {
+      return JSON.stringify({
+        field: path,
+        message,
+      });
+    }
+  );
+
+  statusCode = 400;
+
+  return new AppError(message, 400);
 };
 
 const handleCastErrorDB = (err) => {
@@ -42,47 +36,45 @@ const handleCastErrorDB = (err) => {
   return new AppError(message, 400);
 };
 
-const handleDuplicatesDB = (err) => {
-  const message = `The ${Object.keys(err.keyPattern)[0]}: ${
-    Object.values(err.keyValue)[0]
-  } already exist, please provide a different ${
-    Object.keys(err.keyPattern)[0]
-  }`;
-
-  return new AppError(message, 400);
+const sendErrorDev = (err, res) => {
+  return res.status(err.statusCode).json({
+    status: err.status,
+    error: err,
+    message: err.message,
+    stack: err.stack,
+  });
 };
 
-const handleValidationErrorDB = (err) => {
-  const errors = Object.values(err.errors)
-    .map((error) => error.properties.message)
-    .join(", ");
-
-  const message = `Invalid inputs: ${errors}`;
-  return new AppError(message, 400);
+const sendErrorProd = (error, err, res) => {
+  if (error.isOperational) {
+    return res.status(error.statusCode).json({
+      status: error.status,
+      message: error.message,
+    });
+  } else {
+    console.log("Error", err);
+    return res.status(500).json({
+      status: 500,
+      message: "Internal Server Error",
+    });
+  }
 };
-
-const handleJWTError = () =>
-  new AppError("Invalid token please login again", 401);
-
-const handleJWTExpiredError = () =>
-  new AppError("Your token has epired! Please login again.", 401);
 
 module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";
 
-  if (process.env.NODE_ENV.trim() == "development") {
-    sendErrorDev(err, req, res);
-  } else if (process.env.NODE_ENV.trim() === "production") {
-    let error = { ...err };
-    error.message = err.message;
+  if (process.env.NODE_ENV === "development") return sendErrorDev(err, res);
+
+  if (process.env.NODE_ENV.trim() === "production") {
+    let error = { ...err, message: err.message };
 
     if (err.name === "CastError") error = handleCastErrorDB(error);
-    if (err.code === 11000) error = handleDuplicatesDB(error);
-    if (err.name === "ValidationError") error = handleValidationErrorDB(error);
+    if (err.code === 11000) error = handleDuplicateError(error);
+    if (err.name === "ValidationError") error = handleValidationError(error);
     if (err.name === "JsonWebTokenError") error = handleJWTError(error);
     if (err.name === "TokenExpiredError") error = handleJWTExpiredError(error);
 
-    sendErrorProd(error, req, res);
+    return sendErrorProd(error, err, res);
   }
 };
