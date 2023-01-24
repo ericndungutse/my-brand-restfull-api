@@ -3,6 +3,7 @@ const blogsRouter = require("./routes/blogs.routes");
 const authRouter = require("./routes/auth.routes");
 const messageRouter = require("./routes/message.routes");
 const userRouter = require("./routes/user.routes");
+const commentRouter = require("./routes/comment.routes");
 const globalErrHandler = require("./controller/err.controller");
 const AppError = require("./utils/AppError");
 
@@ -13,6 +14,7 @@ app.use("/api/blogs", blogsRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/messages", messageRouter);
 app.use("/api/users", userRouter);
+app.use("/api/comments", commentRouter);
 
 app.use("*", (req, res, next) => {
   return next(

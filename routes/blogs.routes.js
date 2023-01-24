@@ -7,8 +7,12 @@ const {
   updateBlog,
   deleteBlog,
 } = require("../controller/blogs.controller");
+const commentRouter = require("../routes/comment.routes");
+
+// Get Blogs Comments
+router.use("/:blogId/comments", commentRouter);
 
 router.route("/").get(getBlogs).post(protect, createBlog);
-router.route("/:id").get(getBlog).patch(updateBlog).delete(deleteBlog);
+router.route("/:blogId").get(getBlog).patch(updateBlog).delete(deleteBlog);
 
 module.exports = router;

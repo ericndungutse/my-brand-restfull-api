@@ -33,7 +33,7 @@ exports.getBlogs = async (req, res, next) => {
 
 exports.getBlog = async (req, res, next) => {
   try {
-    const blog = await Blog.findById(req.params.id);
+    const blog = await Blog.findById(req.params.blogId);
 
     if (!blog) return next(new AppError("Blog not found", 404));
 
@@ -50,7 +50,7 @@ exports.getBlog = async (req, res, next) => {
 
 exports.updateBlog = async (req, res, next) => {
   try {
-    const blog = await Blog.findByIdAndUpdate(req.params.id, req.body, {
+    const blog = await Blog.findByIdAndUpdate(req.params.blogId, req.body, {
       new: true,
     });
 
@@ -69,7 +69,7 @@ exports.updateBlog = async (req, res, next) => {
 
 exports.deleteBlog = async (req, res, next) => {
   try {
-    const blog = await Blog.findByIdAndDelete(req.params.id);
+    const blog = await Blog.findByIdAndDelete(req.params.blogId);
 
     if (!blog) return next(new AppError("Blog not found", 404));
 
