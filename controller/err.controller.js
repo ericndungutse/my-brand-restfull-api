@@ -17,6 +17,7 @@ const handleDuplicateError = (err) => {
 };
 
 const handleValidationError = (err) => {
+  console.log(err);
   message = Object.values(err.errors).map(
     ({ properties: { path, message } }) => {
       return JSON.stringify({
