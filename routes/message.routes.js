@@ -5,7 +5,7 @@ const {
   getMessages,
   getMessage,
 } = require("../controller/messages.controller");
-const { protect, restrictTo } = require("../controller/auth.controller");
+const { protect, restrictTo } = require("../middlewares/authorization");
 
 router
   .route("/")

@@ -15,18 +15,18 @@ exports.createBlog = async (req, res) => {
   }
 };
 
-exports.getBlogs = async (req, res) => {
+exports.getBlogs = async (req, res, next) => {
   try {
     const blogs = await Blog.find();
 
     res.status(200).json({
       status: "success",
       data: {
-        blogs
+        blogs,
       },
     });
   } catch (error) {
-    console.log(error.message);
+    next(error);
   }
 };
 
@@ -37,7 +37,7 @@ exports.getBlog = async (req, res) => {
     res.status(200).json({
       status: "success",
       data: {
-        blog
+        blog,
       },
     });
   } catch (error) {
@@ -47,16 +47,14 @@ exports.getBlog = async (req, res) => {
 
 exports.updateBlog = async (req, res) => {
   try {
-    
-    const blog = await Blog.findByIdAndUpdate(req.params.id, req.body,{
-      new: true
+    const blog = await Blog.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
     });
-
 
     res.status(202).json({
       status: "success",
       data: {
-        blog
+        blog,
       },
     });
   } catch (error) {
@@ -64,13 +62,13 @@ exports.updateBlog = async (req, res) => {
   }
 };
 
-exports.deleteBlog = async(req, res) => {
+exports.deleteBlog = async (req, res) => {
   try {
     await Blog.findByIdAndDelete(req.params.id);
 
     res.status(204).json({
       status: "success",
-      data: null
+      data: null,
     });
   } catch (error) {
     console.log(error.message);

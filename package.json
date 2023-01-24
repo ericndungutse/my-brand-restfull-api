@@ -4,7 +4,8 @@
   "description": "\"potofolio server\"",
   "main": "index.js",
   "scripts": {
-    "start:dev": "nodemon index.js"
+    "dev": "nodemon server.js",
+    "prod": "set NODE_ENV=production && nodemon server.js"
   },
   "author": "Eric Tuyizere Ndungutse",
   "license": "ISC",

@@ -24,17 +24,16 @@ const userSchema = new mongoose.Schema(
       },
     },
 
-    // confirmPassword: {
-    //   type: String,
-    //   required: [true, "Confirm password is required"],
-    //   minlength: 6,
-    //   validate: {
-    //     validator: function (el) {
-    //       return el === this.password;
-    //     },
-    //     message: "Password do not match",
-    //   },
-    // },
+    confirmPassword: {
+      type: String,
+      required: [true, "Confirm password is required"],
+      validate: {
+        validator: function (el) {
+          return el === this.password;
+        },
+        message: "Password do not match",
+      },
+    },
 
     photo: String,
 
@@ -48,5 +47,10 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+userSchema.pre("/save", function (next) {
+  this.confirmPassword = undefined;
+  next();
+});
 
 module.exports = mongoose.model("User", userSchema);
