@@ -43,7 +43,7 @@ exports.signin = async (req, res, next) => {
     if (!email || !password)
       return next(new AppError("Please provide email and password", 400));
 
-    if (!user || !(user.password === password))
+    if (!user || !(await user.comparePasswords(password, user.password)))
       return next(new AppError("Email or password is incorrect", 403));
 
     // Sign In User
