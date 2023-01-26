@@ -63,8 +63,8 @@ const { protect, restrictTo } = require("../middlewares/authorization");
  *                       example: Message
  */
 router.route("/").post(createMessage);
-router.use(protect);
-/**d
+router.use(protect, restrictTo("admin"));
+/**
  * @swagger
  * /api/messages:
  *  get:
@@ -81,7 +81,7 @@ router.use(protect);
  *         schema:
  *          type: array
  */
-router.route("/").get(restrictTo("sdmin"), getMessages);
+router.route("/").get(getMessages);
 
 /**
  * @swagger
@@ -108,6 +108,6 @@ router.route("/").get(restrictTo("sdmin"), getMessages);
  *          type: object
 
  */
-router.route("/:id").get(restrictTo("admin"), getMessage);
+router.route("/:id").get(getMessage);
 
 module.exports = router;
