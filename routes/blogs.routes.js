@@ -12,9 +12,57 @@ const commentRouter = require("../routes/comment.routes");
 const likeRouter = require("../routes/likes.routes");
 
 // Get Blogs Comments
+/**
+ * @swagger
+ * /api/blogs/{id}/comments:
+ *  get:
+ *   summary: Get blogs comments by blog ID
+ *   tags: [Blogs]
+ *   parameters:
+ *    - in: path
+ *      name: blogId
+ *      schema:
+ *        type: string
+ *      required: true
+ *      description: alphanumerical ID of the blog to get
+ *
+ *   description: Get blogs comments by blog ID.
+ *
+ *   responses:
+ *      200:
+ *       description: Returned blog
+ *       content:
+ *        application/json:
+ *         schema:
+ *          type: array
+ */
 router.use("/:blogId/comments", commentRouter);
 
-// Get Blogs Likes
+// Get Blogs Comments
+/**
+ * @swagger
+ * /api/blogs/{id}/likes:
+ *  get:
+ *   summary: Get blogs likes by blog ID
+ *   tags: [Blogs]
+ *   parameters:
+ *    - in: path
+ *      name: blogId
+ *      schema:
+ *        type: string
+ *      required: true
+ *      description: alphanumerical ID of the blog to get
+ *
+ *   description: Get blogs likes by blog ID.
+ *
+ *   responses:
+ *      200:
+ *       description: Returned blog
+ *       content:
+ *        application/json:
+ *         schema:
+ *          type: array
+ */
 router.use("/:blogId/likes", likeRouter);
 
 /**
