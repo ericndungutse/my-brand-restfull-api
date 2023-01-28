@@ -14,7 +14,7 @@ const likeRouter = require("../routes/likes.routes");
 // Get Blogs Comments
 /**
  * @swagger
- * /api/blogs/{id}/comments:
+ * /api/blogs/{blogId}/comments:
  *  get:
  *   summary: Get blogs comments by blog ID
  *   tags: [Blogs]
@@ -41,7 +41,7 @@ router.use("/:blogId/comments", commentRouter);
 // Get Blogs Comments
 /**
  * @swagger
- * /api/blogs/{id}/likes:
+ * /api/blogs/{blogId}/likes:
  *  get:
  *   summary: Get blogs likes by blog ID
  *   tags: [Blogs]
@@ -143,7 +143,7 @@ router.route("/").post(protect, createBlog);
 
 /**
  * @swagger
- * /api/blogs/{id}:
+ * /api/blogs/{blogId}:
  *  get:
  *   summary: Get blog by ID
  *   tags: [Blogs]
@@ -170,7 +170,7 @@ router.route("/:blogId").get(getBlog);
 
 /**
  *@swagger
- * /api/blogs:
+ * /api/blogs/{blogId}:
  *  patch:
  *      tags:
  *       - Blogs
@@ -237,7 +237,7 @@ router.route("/:blogId").patch(updateBlog);
 
 /**
  * @swagger
- * /api/blogs/{id}:
+ * /api/blogs/{blogId}:
  *  delete:
  *   summary: Delete blog by ID
  *   tags: [Blogs]
