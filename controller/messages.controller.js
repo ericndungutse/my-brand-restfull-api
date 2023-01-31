@@ -9,7 +9,7 @@ exports.createMessage = async (req, res, next) => {
     });
 
     res.status(201).json({
-      satuts: "success",
+      status: "success",
       data: {
         message,
       },
