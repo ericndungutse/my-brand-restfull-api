@@ -8,7 +8,7 @@ const {
 
 /**
  * @swagger
- * /api/comment:
+ * /api/comments:
  *  get:
  *   summary: For getting all comments
  *   tags: [Comment]
