@@ -3,6 +3,7 @@ const AppError = require("../utils/AppError");
 
 exports.createBlog = async (req, res, next) => {
   try {
+    req.body.user = req.user._id;
     const blog = await Blog.create(req.body);
 
     res.status(201).json({
@@ -50,9 +51,13 @@ exports.getBlog = async (req, res, next) => {
 
 exports.updateBlog = async (req, res, next) => {
   try {
-    const blog = await Blog.findByIdAndUpdate(req.params.blogId, req.body, {
-      new: true,
-    });
+    const blog = await Blog.findOneAndUpdate(
+      { _id: req.params.blogId, user: req.user._id },
+      req.body,
+      {
+        new: true,
+      }
+    );
 
     if (!blog) return next(new AppError("Blog not found", 404));
 
@@ -69,7 +74,10 @@ exports.updateBlog = async (req, res, next) => {
 
 exports.deleteBlog = async (req, res, next) => {
   try {
-    const blog = await Blog.findByIdAndDelete(req.params.blogId);
+    const blog = await Blog.findOneAndDelete({
+      _id: req.params.blogId,
+      user: req.user._id,
+    });
 
     if (!blog) return next(new AppError("Blog not found", 404));
 

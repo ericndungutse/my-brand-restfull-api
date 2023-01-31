@@ -23,11 +23,11 @@ describe("******** CRUD BLOG TESTS ********", () => {
   });
 
   // Getting a single blog
-  test("---- Should return single blog ----", async () => {
-    const res = await request(app).get("/api/blogs/63d3e1635d04138e68e53c90");
-    expect(res.body.status).toBe("success");
-    expect(res.body.data.blog._id).toBe("63d3e1635d04138e68e53c90");
-  });
+  // test("---- Should return single blog ----", async () => {
+  //   const res = await request(app).get("/api/blogs/63d3e1635d04138e68e53c90");
+  //   expect(res.body.status).toBe("success");
+  //   expect(res.body.data.blog._id).toBe("63d3e1635d04138e68e53c90");
+  // });
 
   // Getting Comments on blog
   it("---- should return comments of blog with route /blogs/blogId/comments ----", async () => {

@@ -7,9 +7,7 @@ const handleJWTExpiredError = () =>
   new AppError("Your login session has expired! Please log in again.", 401);
 
 const handleDuplicateError = (err) => {
-  message = `"${String(
-    Object.keys(err.keyValue)
-  ).toUpperCase()}" ${Object.values(
+  message = `${String(Object.keys(err.keyValue)).toUpperCase()} ${Object.values(
     err.keyValue
   )} is taken. Try a different ${Object.keys(err.keyValue)}`;
 

@@ -22,4 +22,13 @@ const comSchema = new mongoose.Schema(
   }
 );
 
+comSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "user",
+    select: "name photo -_id",
+    options: { _recursed: true },
+  });
+  next();
+});
+
 module.exports = mongoose.model("Comment", comSchema);

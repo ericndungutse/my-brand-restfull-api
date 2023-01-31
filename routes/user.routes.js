@@ -1,11 +1,11 @@
 const router = require("express").Router();
-const { protect } = require("../middlewares/authorization");
+const { protect, restrictTo } = require("../middlewares/authorization");
 const { updateMe, getAllUsers } = require("../controller/user.controller");
 
 /**
  *@swagger
- * /api/users:
- *  post:
+ * /api/users/updateMe:
+ *  patch:
  *      tags:
  *       - Users
  *      summary: Add a new user
@@ -76,6 +76,6 @@ router.patch("/updateMe", protect, updateMe);
  *         schema:
  *          type: array
  */
-router.route("/").get(getAllUsers);
+router.route("/").get(protect, restrictTo("admin"), getAllUsers);
 
 module.exports = router;

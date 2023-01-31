@@ -38,7 +38,7 @@ const likeRouter = require("../routes/likes.routes");
  */
 router.use("/:blogId/comments", commentRouter);
 
-// Get Blogs Comments
+// Get Blogs Likes
 /**
  * @swagger
  * /api/blogs/{blogId}/likes:
@@ -65,6 +65,7 @@ router.use("/:blogId/comments", commentRouter);
  */
 router.use("/:blogId/likes", likeRouter);
 
+// Get All Blogs
 /**
  * @swagger
  * /api/blogs:
@@ -84,6 +85,37 @@ router.use("/:blogId/likes", likeRouter);
  */
 router.route("/").get(getBlogs);
 
+// Get Blog By ID
+/**
+ * @swagger
+ * /api/blogs/{blogId}:
+ *  get:
+ *   summary: Get blog by ID
+ *   tags: [Blogs]
+ *   parameters:
+ *    - in: path
+ *      name: blogId
+ *      schema:
+ *        type: string
+ *      required: true
+ *      description: alphanumerical ID of the blog to get
+ * 
+ *   description: This is used to get single blog by its ID.
+ *
+ *   responses:
+ *      200:
+ *       description: Returned blog
+ *       content:
+ *        application/json:
+ *         schema:
+ *          type: object
+
+ */
+router.route("/:blogId").get(getBlog);
+
+// Protect All routes following this middleware
+router.use(protect);
+// Create Blog
 /**
  *@swagger
  * /api/blogs:
@@ -139,35 +171,9 @@ router.route("/").get(getBlogs);
  *                       type: string
  *                       example: '/path/a.jpg'
  */
-router.route("/").post(protect, createBlog);
+router.route("/").post(createBlog);
 
-/**
- * @swagger
- * /api/blogs/{blogId}:
- *  get:
- *   summary: Get blog by ID
- *   tags: [Blogs]
- *   parameters:
- *    - in: path
- *      name: blogId
- *      schema:
- *        type: string
- *      required: true
- *      description: alphanumerical ID of the blog to get
- * 
- *   description: This is used to get single blog by its ID.
- *
- *   responses:
- *      200:
- *       description: Returned blog
- *       content:
- *        application/json:
- *         schema:
- *          type: object
-
- */
-router.route("/:blogId").get(getBlog);
-
+// Update Blog
 /**
  *@swagger
  * /api/blogs/{blogId}:
@@ -235,6 +241,7 @@ router.route("/:blogId").get(getBlog);
  */
 router.route("/:blogId").patch(updateBlog);
 
+// Delete Blog
 /**
  * @swagger
  * /api/blogs/{blogId}:
