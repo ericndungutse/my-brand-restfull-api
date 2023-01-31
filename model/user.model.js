@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema(
         validator: function (el) {
           return el === this.password;
         },
-        message: "Password do not match",
+        message: "Passwords do not match",
       },
     },
 
