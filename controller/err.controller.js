@@ -17,7 +17,6 @@ const handleDuplicateError = (err) => {
 };
 
 const handleValidationError = (err) => {
-  console.log(err);
   message = Object.values(err.errors).map(
     ({ properties: { path, message } }) => {
       return JSON.stringify({
@@ -27,9 +26,9 @@ const handleValidationError = (err) => {
     }
   );
 
-  statusCode = 400;
+  err.statusCode = 400;
 
-  return new AppError(message, 400);
+  return new AppError(message, err.statusCode);
 };
 
 const handleCastErrorDB = (err) => {
