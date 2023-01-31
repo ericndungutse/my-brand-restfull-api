@@ -52,9 +52,11 @@ describe("Messege CRUD", () => {
     expect(msg.body.message).toContain("Message is required");
   });
 
+  // Get messages
   describe("Message CRUD: Get All Messages", () => {
     let token;
 
+    // With admin role
     describe("Get with Admin role", () => {
       beforeAll(async () => {
         process.env.JWT_SECRET = "secret-for-testing";
@@ -73,15 +75,25 @@ describe("Messege CRUD", () => {
       });
 
       // Get all messages
-      it("should return all messages", async () => {
+      it("should return all messages with admin role", async () => {
         const msg = await request(app)
           .get("/api/messages")
           .set("Authorization", "Bearer " + token);
 
         expect(msg.body.status).toBe("success");
       });
+
+      // Get message by ID with Admin role
+      it("should return message by id with admin role", async () => {
+        const msg = await request(app)
+          .get("/api/messages/63d96863194b1c076e9de06c")
+          .set("Authorization", "Bearer " + token);
+
+        expect(msg.body.data.message.email).toContain("eric@example.com");
+      });
     });
 
+    // With user role
     describe("Get with user role", () => {
       beforeAll(async () => {
         process.env.JWT_SECRET = "secret-for-testing";
@@ -100,9 +112,20 @@ describe("Messege CRUD", () => {
       });
 
       // Get all message with user role
-      it("should not return all messages if user isn't admin", async () => {
+      it("should not return all messages with user role", async () => {
         const msg = await request(app)
           .get("/api/messages")
+          .set("Authorization", "Bearer " + token);
+
+        expect(msg.body.message).toContain(
+          "You do not have permission to perform this action"
+        );
+      });
+
+      // Get message by ID with user role
+      it("should not return message with user role", async () => {
+        const msg = await request(app)
+          .get("/api/messages/63d96863194b1c076e9de06c")
           .set("Authorization", "Bearer " + token);
 
         expect(msg.body.message).toContain(
