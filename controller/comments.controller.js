@@ -1,3 +1,4 @@
+const Blog = require("../model/blog.model");
 const Comment = require("../model/comment.model");
 
 exports.createComment = async (req, res, next) => {

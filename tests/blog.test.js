@@ -172,13 +172,6 @@ describe("******** CRUD BLOG TESTS ********", () => {
     expect(res.body.status).toBe("success");
   });
 
-  // Getting a single blog
-  test("---- Should return single blog ----", async () => {
-    const res = await request(app).get("/api/blogs/63da1d145a3fda140ea0be4b");
-    expect(res.body.status).toBe("success");
-    expect(res.body.data.blog._id).toBe("63da1d145a3fda140ea0be4b");
-  });
-
   // Getting Comments on blog
   it("---- should return comments of blog with route /blogs/blogId/comments ----", async () => {
     const res = await request(app).get(
@@ -187,14 +180,14 @@ describe("******** CRUD BLOG TESTS ********", () => {
     expect(res.body.status).toBe("success");
   });
 
-  // Getting Comments on blog with ivalid ID
-  it("---- should return comments of blog with route /blogs/blogId/comments ----", async () => {
-    const res = await request(app).get("/api/blogs/63da1d145a3f/comments");
+  // Getting Comments on blog with invalid ID
+  it("---- should not return comments of blog with invalid id ----", async () => {
+    const res = await request(app).get("/api/blogs/63da1d/comments");
     expect(res.body.status).toBe("fail");
   });
 
   // Getting likes on blog
-  it("---- should return comments of blog with route /blogs/blogId/likes ----", async () => {
+  it("---- should return likes of blog with route /blogs/blogId/likes ----", async () => {
     const res = await request(app).get(
       "/api/blogs/63da1d145a3fda140ea0be4b/likes"
     );
@@ -202,12 +195,19 @@ describe("******** CRUD BLOG TESTS ********", () => {
   });
 
   // Getting likes on blog with invalid id
-  it("---- should return comments of blog with route /blogs/blogId/likes ----", async () => {
+  it("---- should not return likes of blog with invalid id ----", async () => {
     const res = await request(app).get("/api/blogs/63da1d1/likes");
     expect(res.body.status).toBe("fail");
   });
 
   // Getting a single blog
+  test("---- Should return single blog ----", async () => {
+    const res = await request(app).get("/api/blogs/63da1d145a3fda140ea0be4b");
+    expect(res.body.status).toBe("success");
+    expect(res.body.data.blog._id).toBe("63da1d145a3fda140ea0be4b");
+  });
+
+  // Getting a single blog with umatching id
   test("---- Should return no blog if id provided matches no blog ----", async () => {
     const res = await request(app).get("/api/blogs/63d3e1635d04138e68e53c91");
     expect(res.body.message).toContain("Blog not found");
