@@ -1,6 +1,7 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
 const app = require("../app");
+const User = require("../model/user.model");
 
 /* Connecting to the database before each test. */
 beforeAll(async () => {
@@ -83,6 +84,15 @@ describe("Messege CRUD", () => {
         expect(msg.body.status).toBe("success");
       });
 
+      // With modified token
+      it("should return all messages with admin role", async () => {
+        const msg = await request(app)
+          .get("/api/messages")
+          .set("Authorization", "Bearer " + token + "tw6");
+
+        expect(msg.body.message).toContain("Invalid login session");
+      });
+
       // Get message by ID with Admin role
       it("should return message by id with admin role", async () => {
         const msg = await request(app)
@@ -90,6 +100,39 @@ describe("Messege CRUD", () => {
           .set("Authorization", "Bearer " + token);
 
         expect(msg.body.data.message.email).toContain("eric@example.com");
+      });
+    });
+
+    describe("Get Messages with user nolonger existing", () => {
+      let token;
+
+      beforeAll(async () => {
+        process.env.JWT_SECRET = "secret-for-testing";
+        process.env.JWT_EXPIRES_IN = "1d";
+        const res = await request(app).post("/api/auth/signup").send({
+          name: "Jado",
+          email: "jado@example.com",
+          password: "test12345",
+          confirmPassword: "test12345",
+          role: "admin",
+        });
+
+        token = res.body.token;
+      });
+
+      afterAll(() => {
+        process.env.JWT_SECRET = undefined;
+        process.env.JWT_EXPIRES_IN = undefined;
+      });
+
+      // With user no longer existing in db
+      it("should not return all messages if user no longer exists", async () => {
+        await User.deleteOne({ email: "jado@example.com" });
+        const res = await request(app)
+          .get("/api/messages")
+          .set("Authorization", "Bearer " + token);
+
+        expect(res.body.message).toContain("User no longer exist!");
       });
     });
 
