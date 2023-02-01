@@ -187,6 +187,12 @@ describe("******** CRUD BLOG TESTS ********", () => {
     expect(res.body.status).toBe("success");
   });
 
+  // Getting Comments on blog with ivalid ID
+  it("---- should return comments of blog with route /blogs/blogId/comments ----", async () => {
+    const res = await request(app).get("/api/blogs/63da1d145a3f/comments");
+    expect(res.body.status).toBe("fail");
+  });
+
   // Getting likes on blog
   it("---- should return comments of blog with route /blogs/blogId/likes ----", async () => {
     const res = await request(app).get(
