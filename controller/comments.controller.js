@@ -22,7 +22,11 @@ exports.createComment = async (req, res, next) => {
 exports.getAllComments = async (req, res, next) => {
   try {
     let filter = {};
-    if (req.params.blogId) filter.blog = req.params.blogId;
+    if (req.params.blogId) {
+      filter.blog = req.params.blogId;
+
+      await Blog.findById(req.params.blogId);
+    }
     const comments = await Comment.find(filter).populate("user");
 
     res.status(201).json({
