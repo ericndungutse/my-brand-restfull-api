@@ -1,6 +1,7 @@
 const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
 const User = require("../model/user.model");
+const AppError = require("../utils/AppError");
 
 // Protecting Routes
 exports.protect = async (req, res, next) => {
@@ -10,10 +11,9 @@ exports.protect = async (req, res, next) => {
 
     // Check if there is no token
     if (!token || token === "null") {
-      return res.status(401).json({
-        status: "fail",
-        message: "You are not logged in! Please log in to get access.",
-      });
+      return next(
+        new AppError("You are not logged in! Please log in to get access.", 401)
+      );
     }
 
     // Verify and decode the token
@@ -25,19 +25,15 @@ exports.protect = async (req, res, next) => {
     // Check if user still exists
     const user = await User.findById(userId);
     if (!user)
-      return res.status().json({
-        status: "success",
-        message: "User no longer exist! Please signup and continue.",
-      });
+      return next(
+        new AppError("User no longer exist! Please signup and continue.", 401)
+      );
 
     // Grant access and embed user on the req obj
     req.user = user;
     next();
   } catch (error) {
-    res.status(400).json({
-      status: "fail",
-      message: error.message,
-    });
+    next(error);
   }
 };
 
