@@ -52,9 +52,63 @@ describe("Messege CRUD", () => {
     expect(msg.body.message).toContain("Message is required");
   });
 
-  // Get all messages
-  //   it("should return all messages", async () => {
-  //     const msg = await request(app).get("/api/messages");
-  //     expect(msg.body.status).toBe("success");
-  //   });
+  describe("Message CRUD: Get All Messages", () => {
+    let token;
+
+    describe("Get with Admin role", () => {
+      beforeAll(async () => {
+        process.env.JWT_SECRET = "secret-for-testing";
+        process.env.JWT_EXPIRES_IN = "1d";
+        const res = await request(app).post("/api/auth/login").send({
+          email: "eric@example.com",
+          password: "test12345",
+        });
+
+        token = res.body.token;
+      });
+
+      afterAll(() => {
+        process.env.JWT_SECRET = undefined;
+        process.env.JWT_EXPIRES_IN = undefined;
+      });
+
+      // Get all messages
+      it("should return all messages", async () => {
+        const msg = await request(app)
+          .get("/api/messages")
+          .set("Authorization", "Bearer " + token);
+
+        expect(msg.body.status).toBe("success");
+      });
+    });
+
+    describe("Get with user role", () => {
+      beforeAll(async () => {
+        process.env.JWT_SECRET = "secret-for-testing";
+        process.env.JWT_EXPIRES_IN = "1d";
+        const res = await request(app).post("/api/auth/login").send({
+          email: "bwiza@example.com",
+          password: "test12345",
+        });
+
+        token = res.body.token;
+      });
+
+      afterAll(() => {
+        process.env.JWT_SECRET = undefined;
+        process.env.JWT_EXPIRES_IN = undefined;
+      });
+
+      // Get all message with user role
+      it("should not return all messages if user isn't admin", async () => {
+        const msg = await request(app)
+          .get("/api/messages")
+          .set("Authorization", "Bearer " + token);
+
+        expect(msg.body.message).toContain(
+          "You do not have permission to perform this action"
+        );
+      });
+    });
+  });
 });
