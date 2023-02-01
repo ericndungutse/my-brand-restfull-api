@@ -19,4 +19,13 @@ const likeSchema = new mongoose.Schema(
   }
 );
 
+likeSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "user",
+    select: "name photo -_id",
+    options: { _recursed: true },
+  });
+  next();
+});
+
 module.exports = mongoose.model("Like", likeSchema);

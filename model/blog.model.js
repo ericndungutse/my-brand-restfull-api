@@ -12,11 +12,25 @@ const blogSchema = new mongoose.Schema(
       required: [true, "A blog should have text content"],
     },
 
+    user: {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+    },
+
     photo: String,
   },
   {
     timestamps: true,
   }
 );
+
+blogSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "user",
+    select: "name photo -_id",
+    options: { _recursed: true },
+  });
+  next();
+});
 
 module.exports = mongoose.model("Blog", blogSchema);
