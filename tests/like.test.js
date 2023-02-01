@@ -58,7 +58,6 @@ describe("Like CRUD", () => {
   // Get all likes
   it("should return all likes", async () => {
     const likes = await request(app).get("/api/likes");
-    console.log(likes);
     expect(likes.body.status).toBe("success");
   });
 });
