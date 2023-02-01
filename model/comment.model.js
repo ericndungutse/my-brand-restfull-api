@@ -15,6 +15,7 @@ const comSchema = new mongoose.Schema(
     blog: {
       type: mongoose.Types.ObjectId,
       ref: "Blog",
+      required: [true, "provide blog."],
     },
   },
   {

@@ -15,30 +15,60 @@ afterAll(async () => {
 });
 
 describe("Comment CRUD", () => {
-  //   // Comment created
-  //   it("should create comment", async () => {
-  //     const cmt = await request(app).post("/api/comments").send({
-  //       blog: "",
-  //       comment: "comment",
-  //     });
-  //     expect(cmt.body.status).toBe("success");
-  //   });
+  describe("Create Comment", () => {
+    let token;
 
-  //   // Blog is missing
-  //   it("should not create comment if blog is missing", async () => {
-  //     const cmt = await request(app).post("/api/comments").send({
-  //       comment: "comment",
-  //     });
-  //     expect(cmt.body.status).toBe("fail");
-  //   });
+    beforeAll(async () => {
+      process.env.JWT_SECRET = "secret-for-testing";
+      process.env.JWT_EXPIRES_IN = "1d";
+      const res = await request(app).post("/api/auth/login").send({
+        email: "bwiza@example.com",
+        password: "test12345",
+      });
 
-  //   // Comment is missing
-  //   it("should not create comment if comment is missing", async () => {
-  //     const cmt = await request(app).post("/api/comments").send({
-  //       blog: "",
-  //     });
-  //     expect(cmt.body.status).toBe("fail");
-  //   });
+      token = res.body.token;
+    });
+
+    afterAll(() => {
+      process.env.JWT_SECRET = undefined;
+      process.env.JWT_EXPIRES_IN = undefined;
+    });
+
+    // Comment created
+    it("should create comment", async () => {
+      const cmt = await request(app)
+        .post("/api/comments")
+        .set("Authorization", "Bearer " + token)
+        .send({
+          blog: "63da1d145a3fda140ea0be4b",
+          comment: "comment",
+        });
+
+      expect(cmt.body.status).toBe("success");
+    });
+
+    // Blog is missing
+    it("should not create comment if blog is missing", async () => {
+      const cmt = await request(app)
+        .post("/api/comments")
+        .set("Authorization", "Bearer " + token)
+        .send({
+          comment: "comment",
+        });
+      expect(cmt.body.status).toBe("fail");
+    });
+
+    // Comment is missing
+    it("should not create comment if comment is missing", async () => {
+      const cmt = await request(app)
+        .post("/api/comments")
+        .set("Authorization", "Bearer " + token)
+        .send({
+          blog: "63da1d145a3fda140ea0be4b",
+        });
+      expect(cmt.body.status).toBe("fail");
+    });
+  });
 
   // Get all comments
   it("should return all comments", async () => {
