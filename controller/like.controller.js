@@ -1,4 +1,5 @@
 const Like = require("../model/like.model");
+const Blog = require("../model/blog.model");
 
 exports.createLike = async (req, res, next) => {
   try {
@@ -18,7 +19,11 @@ exports.createLike = async (req, res, next) => {
 exports.getAllLikes = async (req, res, next) => {
   try {
     const filter = {};
-    if (req.params.blogId) filter.blog = req.params.blogId;
+    if (req.params.blogId) {
+      filter.blog = req.params.blogId;
+
+      await Blog.findById(req.params.blogId);
+    }
 
     const likes = await Like.find(filter).populate("user");
 

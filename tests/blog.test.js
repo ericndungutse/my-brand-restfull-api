@@ -195,6 +195,12 @@ describe("******** CRUD BLOG TESTS ********", () => {
     expect(res.body.status).toBe("success");
   });
 
+  // Getting likes on blog with invalid id
+  it("---- should return comments of blog with route /blogs/blogId/likes ----", async () => {
+    const res = await request(app).get("/api/blogs/63da1d1/likes");
+    expect(res.body.status).toBe("fail");
+  });
+
   // Getting a single blog
   test("---- Should return no blog if id provided matches no blog ----", async () => {
     const res = await request(app).get("/api/blogs/63d3e1635d04138e68e53c91");
