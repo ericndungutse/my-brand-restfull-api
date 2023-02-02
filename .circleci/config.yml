@@ -1,6 +1,6 @@
 version: 2.1
 
-orb:
+orbs:
   node: circleci/node@5.0.2
 
 jobs:
