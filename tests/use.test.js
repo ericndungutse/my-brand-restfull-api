@@ -39,7 +39,7 @@ describe("USER", () => {
         .patch(`/api/users/updateMe`)
         .set("Authorization", "Bearer " + token)
         .send({
-          name: "Eric Ndugnutse",
+          name: "Eric Ndungutse",
         });
 
       expect(res.body.status).toContain("success");
