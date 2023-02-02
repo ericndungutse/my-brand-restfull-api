@@ -5,7 +5,9 @@ const app = require("../app");
 /* Connecting to the database before each test. */
 beforeAll(async () => {
   mongoose.set("strictQuery", true);
-  await mongoose.connect("mongodb://localhost:27017/eric_ndungutse_test");
+  await mongoose.connect(
+    "mongodb+srv://eric_test_cluster:eric@test-cluster.9kf5irf.mongodb.net/test"
+  );
 });
 
 /* Closing database connection after each test. */

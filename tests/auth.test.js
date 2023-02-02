@@ -8,7 +8,9 @@ beforeAll(async () => {
   process.env.JWT_SECRET = "secret-for-testing";
   process.env.JWT_EXPIRES_IN = "1d";
   mongoose.set("strictQuery", true);
-  await mongoose.connect("mongodb://localhost:27017/eric_ndungutse_test");
+  await mongoose.connect(
+    "mongodb+srv://eric_test_cluster:eric@test-cluster.9kf5irf.mongodb.net/test"
+  );
 });
 
 /* Closing database connection after each test. */

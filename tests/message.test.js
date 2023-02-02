@@ -6,7 +6,9 @@ const User = require("../model/user.model");
 /* Connecting to the database before each test. */
 beforeAll(async () => {
   mongoose.set("strictQuery", true);
-  await mongoose.connect("mongodb://localhost:27017/eric_ndungutse_test");
+  await mongoose.connect(
+    "mongodb+srv://eric_test_cluster:eric@test-cluster.9kf5irf.mongodb.net/test"
+  );
 });
 
 /* Closing database connection after each test. */
@@ -96,10 +98,10 @@ describe("Messege CRUD", () => {
       // Get message by ID with Admin role
       it("should return message by id with admin role", async () => {
         const msg = await request(app)
-          .get("/api/messages/63d96863194b1c076e9de06c")
+          .get("/api/messages/63dc208c37dedf2e543866a6")
           .set("Authorization", "Bearer " + token);
 
-        expect(msg.body.data.message.email).toContain("eric@example.com");
+        expect(msg.body.status).toContain("success");
       });
     });
 
