@@ -6,7 +6,6 @@ const {
   getMe,
   getUser,
 } = require("../controller/user.controller");
-const { signout } = require("../controller/auth.controller");
 
 /**
  *@swagger
@@ -65,6 +64,23 @@ const { signout } = require("../controller/auth.controller");
  */
 router.patch("/updateMe", protect, updateMe);
 
+/**
+ * @swagger
+ * /api/users/me:
+ *  get:
+ *   summary: Get profile information
+ *   tags: [Users]
+ *
+ *   description: Get profile information
+ *
+ *   responses:
+ *      200:
+ *       description: Returned user data
+ *       content:
+ *        application/json:
+ *         schema:
+ *          type: object
+ */
 router.get("/me", protect, getMe, getUser);
 
 /**
