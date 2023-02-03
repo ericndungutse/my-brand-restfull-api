@@ -5,7 +5,7 @@ const app = require("./app");
 
 mongoose.set("strictQuery", false);
 
-mongoose.connect(process.env.LOCAL_DATABASE).then((con) => {
+mongoose.connect(process.env.mongoDb).then((con) => {
   console.log("********************************");
   console.log("Database Connected Successfully!");
   console.log("********************************");
