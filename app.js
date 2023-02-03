@@ -1,6 +1,7 @@
 const express = require("express");
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
+const cors = require("cors");
 
 const blogsRouter = require("./routes/blogs.routes");
 const authRouter = require("./routes/auth.routes");
@@ -12,6 +13,8 @@ const globalErrHandler = require("./controller/err.controller");
 const AppError = require("./utils/AppError");
 
 const app = express();
+
+app.use(cors());
 
 const options = {
   definition: {
