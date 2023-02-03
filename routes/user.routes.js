@@ -1,6 +1,12 @@
 const router = require("express").Router();
 const { protect, restrictTo } = require("../middlewares/authorization");
-const { updateMe, getAllUsers } = require("../controller/user.controller");
+const {
+  updateMe,
+  getAllUsers,
+  getMe,
+  getUser,
+} = require("../controller/user.controller");
+const { signout } = require("../controller/auth.controller");
 
 /**
  *@swagger
@@ -58,6 +64,8 @@ const { updateMe, getAllUsers } = require("../controller/user.controller");
  *                       example: john@email.com
  */
 router.patch("/updateMe", protect, updateMe);
+
+router.get("/me", protect, getMe, getUser);
 
 /**
  * @swagger
