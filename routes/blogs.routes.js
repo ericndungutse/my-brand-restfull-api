@@ -6,6 +6,8 @@ const {
   getBlog,
   updateBlog,
   deleteBlog,
+  getAllBlogs,
+  getMyBlogs,
 } = require("../controller/blogs.controller");
 
 const commentRouter = require("../routes/comment.routes");
@@ -85,6 +87,8 @@ router.use("/:blogId/likes", likeRouter);
  */
 router.route("/").get(getBlogs);
 
+router.get("/my-blogs", protect, getMyBlogs, getBlogs);
+
 // Get Blog By ID
 /**
  * @swagger
@@ -114,7 +118,9 @@ router.route("/").get(getBlogs);
 router.route("/:blogId").get(getBlog);
 
 // Protect All routes following this middleware
+
 router.use(protect);
+
 // Create Blog
 /**
  *@swagger
