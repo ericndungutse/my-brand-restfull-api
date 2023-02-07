@@ -19,10 +19,13 @@ exports.createBlog = async (req, res, next) => {
 
 exports.getBlogs = async (req, res, next) => {
   try {
-    const blogs = await Blog.find();
+    let filter = {};
+    if (req.params.user) filter.user = req.params.user;
+    const blogs = await Blog.find(filter);
 
     res.status(200).json({
       status: "success",
+      length: blogs.length,
       data: {
         blogs,
       },
@@ -88,4 +91,9 @@ exports.deleteBlog = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+exports.getMyBlogs = (req, res, next) => {
+  req.params.user = req.user._id;
+  next();
 };
