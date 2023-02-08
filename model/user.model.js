@@ -14,6 +14,16 @@ const userSchema = new mongoose.Schema(
       unique: true,
     },
 
+    tel: {
+      type: Number,
+    },
+
+    country: {
+      type: String,
+    },
+
+    socialNet: [String],
+
     password: {
       type: String,
       required: [true, "Password is required"],

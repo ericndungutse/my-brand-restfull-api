@@ -1,6 +1,11 @@
 const router = require("express").Router();
 
-const { signin, signup } = require("../controller/auth.controller");
+const {
+  signin,
+  signup,
+  updatePassword,
+} = require("../controller/auth.controller");
+const { protect } = require("../middlewares/authorization");
 
 // Signup
 
@@ -64,7 +69,8 @@ const { signin, signup } = require("../controller/auth.controller");
  */
 router.route("/signup").post(signup);
 
-// Login
+// Change/Update Password
+router.route("/update-password").post(protect, updatePassword);
 
 /**
  *@swagger
@@ -123,8 +129,5 @@ router.route("/signup").post(signup);
  */
 
 router.post("/login", signin);
-
-// Signout
-// router.get("/signout", protect, signout);
 
 module.exports = router;

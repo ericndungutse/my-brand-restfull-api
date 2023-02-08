@@ -53,7 +53,35 @@ exports.signin = async (req, res, next) => {
   }
 };
 
-// Logout
-exports.signout = (req, res) => {
-  res.status(200).json({ status: "success", token: "" });
+exports.updatePassword = async (req, res, next) => {
+  try {
+    //  1) Get userfrom collection
+    const user = await User.findById(req.user._id).select("+password");
+    if (!user) return next(new AppError(`User doesn't exist.`, 404));
+
+    // 2) Check if posted current password is
+    if (
+      !(await user.comparePasswords(req.body.currentPassword, user.password))
+    ) {
+      return next(new AppError("Your current password is wrong", 401));
+    }
+
+    if (req.body.password !== req.body.confirmPassword) {
+      return next(
+        new AppError("New password and confirm password are not the same", 401)
+      );
+    }
+
+    // 3) If correct, update the password
+    user.password = req.body.password;
+    user.confirmPassword = req.body.confirmPassword;
+    await user.save();
+
+    res.status(200).json({
+      status: "success",
+      message: "Password changed successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
 };
