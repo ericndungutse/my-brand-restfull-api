@@ -29,6 +29,15 @@ exports.protect = async (req, res, next) => {
         new AppError("User no longer exist! Please signup and continue.", 401)
       );
 
+    // Check if user changed password after jwt was issued
+    if (user.checkPasswordChanged(iat))
+      return next(
+        new AppError(
+          "User recently changed password! Please log in again.",
+          401
+        )
+      );
+
     // Grant access and embed user on the req obj
     req.user = user;
     next();
