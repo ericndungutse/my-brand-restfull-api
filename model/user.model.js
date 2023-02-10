@@ -1,3 +1,4 @@
+const crypto = require("crypto");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
@@ -53,12 +54,17 @@ const userSchema = new mongoose.Schema(
       default: "user",
       enum: ["user", "admin"],
     },
+
+    passwordResetToken: String,
+    passwordResetTokenExpiresIn: Date,
+    passwordChangedAt: Date,
   },
   {
     timestamps: true,
   }
 );
 
+// Encrypt Password
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next;
 
@@ -68,12 +74,40 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
+// Create password changed at before changing the password
+userSchema.pre("save", function (next) {
+  if (!this.isModified("password") || this.isNew) return next();
+
+  this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+
 // Methods to verify password
 userSchema.methods.comparePasswords = async function (
   candidatePassword,
   userPassword
 ) {
   return await bcrypt.compare(candidatePassword, userPassword);
+};
+
+// Create Password Reset Code
+userSchema.methods.createPasswordResetToken = function () {
+  const resetCode = crypto.randomInt(999999).toString();
+
+  this.passwordResetToken = crypto
+    .createHash("sha256")
+    .update(resetCode)
+    .digest("hex");
+
+  this.passwordResetTokenExpiresIn = Date.now() + 10 * 60 * 1000;
+
+  return resetCode;
+};
+
+// Check if user changed password recently
+userSchema.methods.checkPasswordChanged = function (jwtIat) {
+  // jwtIat is in seconds while passwordChangedAt getTime returns milleseconds
+  return this.passwordChangedAt?.getTime() / 1000 > jwtIat;
 };
 
 module.exports = mongoose.model("User", userSchema);

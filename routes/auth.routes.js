@@ -4,11 +4,24 @@ const {
   signin,
   signup,
   updatePassword,
+  forgotPassword,
+  resetPassword,
+} = require("../controller/auth.controller");
+const { protect } = require("../middlewares/authorization");
+
+// Forgot Password
+router.route("/forgot-password").post(forgotPassword);
+
+// Reset Password
+router.route("/reset-password/:token").post(resetPassword);
+const {
+  signin,
+  signup,
+  updatePassword,
 } = require("../controller/auth.controller");
 const { protect } = require("../middlewares/authorization");
 
 // Signup
-
 /**
  *@swagger
  * /api/auth/signup:
