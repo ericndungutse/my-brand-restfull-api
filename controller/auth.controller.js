@@ -99,9 +99,7 @@ exports.forgotPassword = async (req, res, next) => {
     await user.save({ validateModifiedOnly: true });
 
     // Send it to the use's email
-    const resetUrl = `${req.protocol}://${req.get(
-      "host"
-    )}/api/auth/reset-password/${resetCode}`;
+    const resetUrl = `https://ndungutse.netlify.app/reset-password.html?token=${resetCode}`;
 
     const message = `Forgot your password? use this link "${resetUrl}" to reset your password. If you did not forgot your password, please ignore this email!`;
 
