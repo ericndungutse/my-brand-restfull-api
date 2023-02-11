@@ -1,13 +1,12 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
 const app = require("../app");
+const { db } = require("./test.db.js");
 
 /* Connecting to the database before each test. */
 beforeAll(async () => {
   mongoose.set("strictQuery", true);
-  await mongoose.connect(
-    "mongodb+srv://eric_test_cluster:eric@test-cluster.9kf5irf.mongodb.net/test"
-  );
+  await mongoose.connect(`${db}`);
 });
 
 /* Closing database connection after each test. */
@@ -45,7 +44,7 @@ describe("USER", () => {
         });
 
       expect(res.body.status).toContain("success");
-    });
+    }, 20000);
 
     // Get All Users
     it("should return all users", async () => {
@@ -54,6 +53,6 @@ describe("USER", () => {
         .set("Authorization", "Bearer " + token);
 
       expect(res.body.status).toBe("success");
-    });
+    }, 20000);
   });
 });

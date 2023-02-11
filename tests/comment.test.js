@@ -1,13 +1,12 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
 const app = require("../app");
+const { db } = require("./test.db.js");
 
 /* Connecting to the database before each test. */
 beforeAll(async () => {
   mongoose.set("strictQuery", true);
-  await mongoose.connect(
-    "mongodb+srv://eric_test_cluster:eric@test-cluster.9kf5irf.mongodb.net/test"
-  );
+  await mongoose.connect(`${db}`);
 });
 
 /* Closing database connection after each test. */
@@ -47,7 +46,7 @@ describe("Comment CRUD", () => {
         });
 
       expect(cmt.body.status).toBe("success");
-    });
+    }, 20000);
 
     // Blog is missing
     it("should not create comment if blog is missing", async () => {
@@ -58,7 +57,7 @@ describe("Comment CRUD", () => {
           comment: "comment",
         });
       expect(cmt.body.status).toBe("fail");
-    });
+    }, 20000);
 
     // Comment is missing
     it("should not create comment if comment is missing", async () => {
@@ -69,12 +68,12 @@ describe("Comment CRUD", () => {
           blog: "63da1d145a3fda140ea0be4b",
         });
       expect(cmt.body.status).toBe("fail");
-    });
+    }, 20000);
   });
 
   // Get all comments
   it("should return all comments", async () => {
     const cmt = await request(app).get("/api/comments");
     expect(cmt.body.status).toBe("success");
-  });
+  }, 20000);
 });

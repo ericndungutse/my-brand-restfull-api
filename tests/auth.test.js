@@ -2,15 +2,14 @@ const request = require("supertest");
 const mongoose = require("mongoose");
 const app = require("../app");
 const User = require("../model/user.model");
+const { db } = require("./test.db.js");
 
 /* Connecting to the database before each test. */
 beforeAll(async () => {
   process.env.JWT_SECRET = "secret-for-testing";
   process.env.JWT_EXPIRES_IN = "1d";
   mongoose.set("strictQuery", true);
-  await mongoose.connect(
-    "mongodb+srv://eric_test_cluster:eric@test-cluster.9kf5irf.mongodb.net/test"
-  );
+  await mongoose.connect(`${db}`);
 });
 
 /* Closing database connection after each test. */
@@ -38,7 +37,7 @@ describe("*********** AUTHENTICATION ***********", () => {
 
       expect(res.body.status).toBe("success");
       expect(res.body.data.user.name).toContain("Deborah Bwiza");
-    });
+    }, 20000);
 
     // User signed up with existing email
     it("should not signup a new user if email already exist", async () => {
@@ -51,7 +50,7 @@ describe("*********** AUTHENTICATION ***********", () => {
 
       expect(res.body.status).toBe("fail");
       expect(res.body.message).toContain("is taken");
-    });
+    }, 20000);
 
     // User signed up without name
     it("should not signup a new user if name is missing", async () => {
@@ -62,7 +61,7 @@ describe("*********** AUTHENTICATION ***********", () => {
       });
       expect(res.body.status).toBe("fail");
       expect(res.body.message).toContain("Provide your full name.");
-    });
+    }, 20000);
 
     // User signed up without email
     it("should not signup a new user if email is missing", async () => {
@@ -73,7 +72,7 @@ describe("*********** AUTHENTICATION ***********", () => {
       });
       expect(res.body.status).toBe("fail");
       expect(res.body.message).toContain("A valid working email is required");
-    });
+    }, 20000);
 
     // User signed up without password
     it("should not signup a new user if password is missing", async () => {
@@ -84,7 +83,7 @@ describe("*********** AUTHENTICATION ***********", () => {
       });
       expect(res.body.status).toBe("fail");
       expect(res.body.message).toContain("Password is required");
-    });
+    }, 20000);
 
     // User signed up without password confirmPassword
     it("should not signup a new user if confirm password is missing", async () => {
@@ -95,7 +94,7 @@ describe("*********** AUTHENTICATION ***********", () => {
       });
       expect(res.body.status).toBe("fail");
       expect(res.body.message).toContain("Confirm password is required");
-    });
+    }, 20000);
 
     // User signed up with invalid password
     it("should not signup a new user if password is invalid", async () => {
@@ -110,7 +109,7 @@ describe("*********** AUTHENTICATION ***********", () => {
       expect(res.body.message).toContain(
         "Password must be 8 or more characters."
       );
-    });
+    }, 20000);
 
     // User signed up with unmatching password
     it("should signup a new user", async () => {
@@ -124,7 +123,7 @@ describe("*********** AUTHENTICATION ***********", () => {
       expect(res.body.status).toBe("fail");
       expect(res.body.message).toContain("Passwords do not match");
     });
-  });
+  }, 20000);
 
   describe("*********** User Login ***********", () => {
     // User sign in successfully
@@ -135,7 +134,7 @@ describe("*********** AUTHENTICATION ***********", () => {
       });
       expect(res.body.status).toBe("success");
       expect(res.body.data.user.name).toContain("Eric Ndungutse");
-    });
+    }, 20000);
 
     // User sign in with wrong password
     it("should not sigin a user with wrong password", async () => {
@@ -145,7 +144,7 @@ describe("*********** AUTHENTICATION ***********", () => {
       });
       expect(res.body.status).toBe("fail");
       expect(res.body.message).toContain("Email or password is incorrect");
-    });
+    }, 20000);
 
     // User sign in with unregistered email
     it("should not sigin a user with unregistered user", async () => {
@@ -156,5 +155,5 @@ describe("*********** AUTHENTICATION ***********", () => {
       expect(res.body.status).toBe("fail");
       expect(res.body.message).toContain("Email or password is incorrect");
     });
-  });
+  }, 20000);
 });

@@ -1,13 +1,12 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
 const app = require("../app");
+const { db } = require("./test.db.js");
 
 /* Connecting to the database before each test. */
 beforeAll(async () => {
   mongoose.set("strictQuery", true);
-  await mongoose.connect(
-    "mongodb+srv://eric_test_cluster:eric@test-cluster.9kf5irf.mongodb.net/test"
-  );
+  await mongoose.connect(`${db}`);
 });
 
 /* Closing database connection after each test. */
@@ -60,7 +59,7 @@ describe("******** CRUD BLOG TESTS ********", () => {
         blogId = res.body.data.blog._id;
 
         expect(res.body.status).toBe("success");
-      });
+      }, 20000);
 
       // No user
       it("should not create blog if no user signed in", async () => {
@@ -71,7 +70,7 @@ describe("******** CRUD BLOG TESTS ********", () => {
         });
 
         expect(res.body.message).toContain("not logged");
-      });
+      }, 20000);
 
       // No title
       it("should not create blog if title is missing", async () => {
@@ -84,7 +83,7 @@ describe("******** CRUD BLOG TESTS ********", () => {
           });
 
         expect(res.body.message).toContain("A blog should have a title");
-      });
+      }, 20000);
     });
 
     describe("Update Blog", () => {
@@ -118,7 +117,7 @@ describe("******** CRUD BLOG TESTS ********", () => {
           });
 
         expect(res.body.data.blog.title).toContain("CSS Flex Tech");
-      });
+      }, 20000);
 
       // Invalid ID
       it("should not update blog if id is invalid", async () => {
@@ -130,7 +129,7 @@ describe("******** CRUD BLOG TESTS ********", () => {
           });
 
         expect(res.body.message).toContain("Invalid");
-      });
+      }, 20000);
     });
 
     describe("Delete Blog", () => {
@@ -155,7 +154,7 @@ describe("******** CRUD BLOG TESTS ********", () => {
           .set("Authorization", "Bearer " + token);
 
         expect(res.statusCode).toBe(204);
-      });
+      }, 20000);
 
       // Invalid ID
       it("should not delete blog if id is invalid", async () => {
@@ -164,7 +163,7 @@ describe("******** CRUD BLOG TESTS ********", () => {
           .set("Authorization", "Bearer " + token);
 
         expect(res.body.message).toContain("Invalid");
-      });
+      }, 20000);
     });
   });
 
@@ -172,7 +171,7 @@ describe("******** CRUD BLOG TESTS ********", () => {
   test("---- Should return all blogs ----", async () => {
     const res = await request(app).get("/api/blogs");
     expect(res.body.status).toBe("success");
-  });
+  }, 20000);
 
   // Getting Comments on blog
   it("---- should return comments of blog with route /blogs/blogId/comments ----", async () => {
@@ -180,13 +179,13 @@ describe("******** CRUD BLOG TESTS ********", () => {
       "/api/blogs/63da1d145a3fda140ea0be4b/comments"
     );
     expect(res.body.status).toBe("success");
-  });
+  }, 20000);
 
   // Getting Comments on blog with invalid ID
   it("---- should not return comments of blog with invalid id ----", async () => {
     const res = await request(app).get("/api/blogs/63da1d/comments");
     expect(res.body.status).toBe("fail");
-  });
+  }, 20000);
 
   // Getting likes on blog
   it("---- should return likes of blog with route /blogs/blogId/likes ----", async () => {
@@ -194,30 +193,30 @@ describe("******** CRUD BLOG TESTS ********", () => {
       "/api/blogs/63da1d145a3fda140ea0be4b/likes"
     );
     expect(res.body.status).toBe("success");
-  });
+  }, 20000);
 
   // Getting likes on blog with invalid id
   it("---- should not return likes of blog with invalid id ----", async () => {
     const res = await request(app).get("/api/blogs/63da1d1/likes");
     expect(res.body.status).toBe("fail");
-  });
+  }, 20000);
 
   // Getting a single blog
   test("---- Should return single blog ----", async () => {
     const res = await request(app).get("/api/blogs/63da1d145a3fda140ea0be4b");
     expect(res.body.status).toBe("success");
     expect(res.body.data.blog._id).toBe("63da1d145a3fda140ea0be4b");
-  });
+  }, 20000);
 
   // Getting a single blog with umatching id
   test("---- Should return no blog if id provided matches no blog ----", async () => {
     const res = await request(app).get("/api/blogs/63d3e1635d04138e68e53c91");
     expect(res.body.message).toContain("Blog not found");
-  }, 10000);
+  }, 20000);
 
   // Invalid blog id
   test("---- Should return error if blog id is invalid ----", async () => {
     const res = await request(app).get("/api/blogs/63d3e105138e68 ");
     expect(res.body.message).toContain("Invalid");
-  }, 10000);
+  }, 20000);
 });

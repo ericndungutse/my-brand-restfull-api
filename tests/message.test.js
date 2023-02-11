@@ -2,13 +2,12 @@ const request = require("supertest");
 const mongoose = require("mongoose");
 const app = require("../app");
 const User = require("../model/user.model");
+const { db } = require("./test.db.js");
 
 /* Connecting to the database before each test. */
 beforeAll(async () => {
   mongoose.set("strictQuery", true);
-  await mongoose.connect(
-    "mongodb+srv://eric_test_cluster:eric@test-cluster.9kf5irf.mongodb.net/test"
-  );
+  await mongoose.connect(`${db}`);
 });
 
 /* Closing database connection after each test. */
@@ -35,7 +34,7 @@ describe("Messege CRUD", () => {
       message: "message",
     });
     expect(msg.body.message).toContain("Provide your full name.");
-  });
+  }, 20000);
 
   // Email is missing
   it("should not create message if email is missing", async () => {
@@ -44,7 +43,7 @@ describe("Messege CRUD", () => {
       message: "message",
     });
     expect(msg.body.message).toContain("A valid working email is required");
-  });
+  }, 20000);
 
   // Message missing
   it("should not create message if message is missing", async () => {
@@ -53,7 +52,7 @@ describe("Messege CRUD", () => {
       name: "Eric Ndungutse",
     });
     expect(msg.body.message).toContain("Message is required");
-  });
+  }, 20000);
 
   // Get messages
   describe("Message CRUD: Get All Messages", () => {
@@ -84,7 +83,7 @@ describe("Messege CRUD", () => {
           .set("Authorization", "Bearer " + token);
 
         expect(msg.body.status).toBe("success");
-      });
+      }, 20000);
 
       // With modified token
       it("should return all messages with admin role", async () => {
@@ -93,7 +92,7 @@ describe("Messege CRUD", () => {
           .set("Authorization", "Bearer " + token + "tw6");
 
         expect(msg.body.message).toContain("Invalid login session");
-      });
+      }, 20000);
 
       // Get message by ID with Admin role
       it("should return message by id with admin role", async () => {
@@ -102,7 +101,7 @@ describe("Messege CRUD", () => {
           .set("Authorization", "Bearer " + token);
 
         expect(msg.body.status).toContain("success");
-      });
+      }, 20000);
     });
 
     describe("Get Messages with user nolonger existing", () => {
@@ -165,7 +164,7 @@ describe("Messege CRUD", () => {
         expect(msg.body.message).toContain(
           "You do not have permission to perform this action"
         );
-      });
+      }, 20000);
 
       // Get message by ID with user role
       it("should not return message with user role", async () => {
@@ -176,7 +175,7 @@ describe("Messege CRUD", () => {
         expect(msg.body.message).toContain(
           "You do not have permission to perform this action"
         );
-      });
+      }, 20000);
     });
   });
 });

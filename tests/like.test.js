@@ -1,13 +1,12 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
 const app = require("../app");
+const { db } = require("./test.db.js");
 
 /* Connecting to the database before each test. */
 beforeAll(async () => {
   mongoose.set("strictQuery", true);
-  await mongoose.connect(
-    "mongodb+srv://eric_test_cluster:eric@test-cluster.9kf5irf.mongodb.net/test"
-  );
+  await mongoose.connect(`${db}`);
 });
 
 /* Closing database connection after each test. */
@@ -45,7 +44,7 @@ describe("Like CRUD", () => {
           blog: "63da1d145a3fda140ea0be4b",
         });
       expect(like.body.status).toBe("success");
-    });
+    }, 20000);
 
     // Blog is missing
     it("should not create like if blog is missing", async () => {
@@ -54,12 +53,12 @@ describe("Like CRUD", () => {
         .set("Authorization", "Bearer " + token)
         .send({});
       expect(like.body.status).toBe("fail");
-    });
+    }, 20000);
   });
 
   // Get all likes
   it("should return all likes", async () => {
     const likes = await request(app).get("/api/likes");
     expect(likes.body.status).toBe("success");
-  });
+  }, 20000);
 });
