@@ -1,1 +1,2 @@
-exports.db = "mongodb://localhost:27017/eric_ndungutse_test";
+exports.db =
+  "mongodb+srv://eric_test_cluster:eric@test-cluster.9kf5irf.mongodb.net/?retryWrites=true&w=majority";
