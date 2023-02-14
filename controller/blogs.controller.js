@@ -1,5 +1,6 @@
 const Blog = require("../model/blog.model.js");
 const AppError = require("../utils/AppError");
+const APIFeatures = require("../utils/apiFeatures");
 
 exports.createBlog = async (req, res, next) => {
   try {
@@ -20,8 +21,15 @@ exports.createBlog = async (req, res, next) => {
 exports.getBlogs = async (req, res, next) => {
   try {
     let filter = {};
-    if (req.params.user) filter.user = req.params.user;
-    const blogs = await Blog.find(filter);
+    if (req.params.user) filter = { user: req.params.user };
+
+    const features = new APIFeatures(Blog.find(filter), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+
+    const blogs = await features.query;
 
     res.status(200).json({
       status: "success",
